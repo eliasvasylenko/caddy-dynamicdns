@@ -190,7 +190,7 @@ var defaultHTTPIPServices = []string{
 // UPnP gets the IP address from UPnP device.
 type UPnP struct {
 	// The UPnP endpoint to query. If empty, the default UPnP
-	// discovery will be used. 
+	// discovery will be used.
 	Endpoint string `json:"endpoint,omitempty"`
 
 	logger *zap.Logger
@@ -304,12 +304,12 @@ func (u NetInterface) GetIPs(ctx context.Context, versions IPVersions) ([]net.IP
 			foundIPV4 = true
 			continue
 		}
-		if versions.V6Enabled() && !foundIPV6 && ipNet.IP.To16() != nil {
+		if versions.V6Enabled() && !foundIPV6 && ipNet.IP.To4() == nil {
 			ips = append(ips, ipNet.IP)
 			foundIPV6 = true
 			continue
 		}
-		if ( foundIPV4 || !versions.V4Enabled() ) && ( foundIPV6 || !versions.V6Enabled() ) {
+		if (foundIPV4 || !versions.V4Enabled()) && (foundIPV6 || !versions.V6Enabled()) {
 			break
 		}
 	}
@@ -350,7 +350,7 @@ func (s Static) GetIPs(ctx context.Context, versions IPVersions) ([]net.IP, erro
 			continue
 		}
 
-		if versions.V6Enabled() && ip.To16() != nil {
+		if versions.V6Enabled() && ip.To4() == nil {
 			ips = append(ips, ip)
 			continue
 		}
